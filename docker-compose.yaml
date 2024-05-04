@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:alpine
+    ports:
+      - '5432:5432'
+
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=7861
+      - DATABASE_HOST=${DATABASE_HOSTNAME}
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin_hairsalon:
+    container_name: pgadmin_todo_app
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"

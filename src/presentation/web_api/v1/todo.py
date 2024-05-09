@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from domain.exceptions import TodoAlreadyExist
+from domain.exceptions import TodoAlreadyExist, TodoNotFoundByPk
 from domain.models import EmptyTodo
 from domain.todo_ioc_interface import ITodoIoC
 
@@ -40,6 +40,11 @@ async def get_todo(
         todo_id: UUID,
         ioc: Annotated[ITodoIoC, Depends(Stub(ITodoIoC))]
 ):
-    async with ioc.get_todo(owner_id=owner_id, todo_id=todo_id) as interactor:
-        result = await interactor()
-        return result
+    try:
+        async with ioc.get_todo(owner_id=owner_id, todo_id=todo_id) as interactor:
+            result = await interactor()
+            return result
+    except TodoNotFoundByPk as tnf:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Not found"
+        ) from tnf

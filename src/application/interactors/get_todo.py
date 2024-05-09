@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from domain.exceptions import TodoNotFoundError, TodoNotFoundByPk
 from domain.models import TodoID, Todo
 
 
@@ -15,6 +16,9 @@ class GetTodo:
         self._todo_db_gateway = todo_db_gateway
 
     async def __call__(self) -> Todo:
-        result = await self._todo_db_gateway.get_todo(owner_id=self._owner_id, todo_id=self._todo_id)
+        try:
+            result = await self._todo_db_gateway.get_todo(owner_id=self._owner_id, todo_id=self._todo_id)
 
-        return result
+            return result
+        except TodoNotFoundError as tnf:
+            raise TodoNotFoundByPk from tnf

@@ -14,7 +14,19 @@ class TodoAlreadyExist(TodoInteractorError):
     ...
 
 
+class TodoNotFoundByPk(TodoInteractorError):
+    ...
+
+
 class GatewayError(AppError):
+    ...
+
+
+class NotFoundError(GatewayError):
+    ...
+
+
+class TodoNotFoundError(NotFoundError):
     ...
 
 

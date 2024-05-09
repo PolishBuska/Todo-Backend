@@ -1,4 +1,8 @@
-from pydantic import BaseModel, Field
+from typing import Annotated, List
+from uuid import UUID
+import datetime
+
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class TodoBase(BaseModel):
@@ -8,3 +12,22 @@ class TodoBase(BaseModel):
 
 class TodoCreated(TodoBase):
     ...
+
+
+class NoteBase(BaseModel):
+    name: str = Field(min_length=1, max_length=40)
+    content: str = Field(min_length=1, max_length=200)
+
+
+class NoteCreated(NoteBase):
+    ...
+
+
+class TodoReturned(TodoBase):
+    todo_id: UUID
+    owner_id: UUID
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    notes: List[NoteBase] | None = None
+    model_config = ConfigDict(from_attributes=True)
+

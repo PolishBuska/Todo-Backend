@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from uuid import UUID
 
 from domain.models import EmptyTodo, TodoID, Todo
 
@@ -19,9 +20,9 @@ class CTodoIoC:
         )
 
     @asynccontextmanager
-    async def get_todo(self, todo_id: TodoID, owner_uuid) -> Todo:
+    async def get_todo(self, todo_id: UUID, owner_id: UUID) -> Todo:
         yield GetTodo(
             todo_id=todo_id,
-            owner_uuid=owner_uuid,
+            owner_id=owner_id,
             todo_db_gateway=self._todo_db_gateway
         )

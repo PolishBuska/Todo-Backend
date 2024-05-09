@@ -1,17 +1,18 @@
 from fastapi import Depends
 
-from infrastucture.impl_dependencies.session import session_factory
 from infrastucture.gateways.todo_gateway import TodoGateway
+from infrastucture.models import Todo
+from infrastucture.database import session_factory
 
 from application.ioc.todo import CTodoIoC
 
 
-async def todo_interactor_factory():
+async def todo_ioc_factory(session=Depends(session_factory)):
     return CTodoIoC(
         (
             TodoGateway(
-                session=Depends(session_factory),
-                model=None
+                model=Todo,
+                uow=session
             )
         )
     )

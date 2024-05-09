@@ -1,13 +1,12 @@
 from contextlib import asynccontextmanager
 
 from domain.models import EmptyTodo, TodoID, Todo
-from domain.todo_interactor_interface import ITodoInteractor
 
-from application.create_todo import CreateTodo
-from application.get_todo import GetTodo
+from application.interactors.create_todo import CreateTodo
+from application.interactors.get_todo import GetTodo
 
 
-class CTodoInteractor:
+class CTodoIoC:
     def __init__(self, todo_db_gateway):
         self._todo_db_gateway = todo_db_gateway
 

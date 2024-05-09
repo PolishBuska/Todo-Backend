@@ -1,19 +1,17 @@
-from application.create_todo import CreateTodo
-from domain.models import EmptyTodo
+from fastapi import Depends
 
-from application.interactors.todo import CTodoInteractor
+from infrastucture.impl_dependencies.session import session_factory
+from infrastucture.gateways.todo_gateway import TodoGateway
 
-
-class DbGateway:
-    def __init__(self):
-        self._cont = []
-
-    async def create_todo(self, todo: EmptyTodo, owner_id):
-        self._cont.append(
-            (todo, owner_id)
-        )
-        return self._cont
+from application.ioc.todo import CTodoIoC
 
 
 async def todo_interactor_factory():
-    return CTodoInteractor(DbGateway())
+    return CTodoIoC(
+        (
+            TodoGateway(
+                session=Depends(session_factory),
+                model=None
+            )
+        )
+    )

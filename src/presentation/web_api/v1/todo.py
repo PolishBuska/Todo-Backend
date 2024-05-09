@@ -16,10 +16,10 @@ todo_router = APIRouter(
 async def create_todo(
         todo: TodoCreated,
         owner_id: int,
-        interactor: Annotated[ITodoInteractor,
+        ioc: Annotated[ITodoInteractor,
         Depends(Stub(ITodoInteractor))]
                       ):
     todo = EmptyTodo(**todo.model_dump())
-    async with interactor.create_todo(todo=todo, owner_uuid=owner_id) as create_interactor:
-        res = await create_interactor()
+    async with ioc.create_todo(todo=todo, owner_uuid=owner_id) as interactor:
+        res = await interactor()
         return res

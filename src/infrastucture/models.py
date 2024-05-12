@@ -1,7 +1,7 @@
 import uuid
 
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Column, ForeignKey, TIMESTAMP, func
 
 from src.infrastucture.database import get_base
@@ -24,6 +24,7 @@ class Todo(Base):
                         nullable=False,
                         server_default=func.now(),
                         onupdate=func.now())
+    notes: Mapped[list["Note"]] = relationship(back_populates='todo', cascade="all, delete")
 
     def to_dict(self):
         return {
@@ -33,6 +34,7 @@ class Todo(Base):
             "desc": self.desc,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
+            "notes": self.notes
         }
 
 
@@ -51,3 +53,14 @@ class Note(Base):
                         nullable=False,
                         server_default=func.now(),
                         onupdate=func.now())
+    todo: Mapped["Todo"] = relationship(back_populates="notes")
+
+    def to_dict(self):
+        return {
+            "owner_id": str(self.owner_id),
+            "note_id": str(self.note_id),
+            "name": self.name,
+            "content": self.content,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+        }

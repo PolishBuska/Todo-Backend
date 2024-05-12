@@ -23,6 +23,13 @@ class NoteCreated(NoteBase):
     ...
 
 
+class NoteReturned(NoteBase):
+    owner_id: UUID
+    note_id: UUID
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+
+
 class TodoReturned(TodoBase):
     todo_id: UUID
     owner_id: UUID
@@ -31,3 +38,7 @@ class TodoReturned(TodoBase):
     notes: List[NoteBase] | None = None
     model_config = ConfigDict(from_attributes=True)
 
+
+class TodoDeleted(BaseModel):
+    item_id: UUID
+    success: bool

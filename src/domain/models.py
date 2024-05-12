@@ -1,6 +1,7 @@
-from typing import NewType, List, Annotated
+from typing import NewType, List, Annotated, NamedTuple, TypeVar
 from uuid import UUID
 from dataclasses import dataclass
+
 
 TodoID = NewType('TodoID', UUID)
 NoteID = NewType('NoteID', UUID)
@@ -35,6 +36,13 @@ class EmptyNote:
 
 @dataclass
 class Note(EmptyNote):
-    id: NoteID
+    owner_id: UUID
+    note_id: NoteID
     created_at: str
     updated_at: str
+
+
+@dataclass
+class DeletedResult:
+    item_id: UUID
+    success: bool

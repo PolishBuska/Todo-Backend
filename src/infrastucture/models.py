@@ -45,7 +45,7 @@ class Note(Base):
     note_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(unique=True, nullable=False)
     content: Mapped[str] = mapped_column(nullable=True)
-    todo_id_fk = Column(UUID(as_uuid=True), ForeignKey('todos.todo_id'))
+    todo_id_fk = Column(UUID(as_uuid=True), ForeignKey('todos.todo_id', ondelete="CASCADE"))
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False,
                         server_default=func.now())

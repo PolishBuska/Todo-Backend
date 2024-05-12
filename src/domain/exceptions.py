@@ -44,6 +44,10 @@ class NoteNotFoundError(NotFoundError):
     ...
 
 
+class NoteNotFoundByPk(NoteNotFoundError):
+    ...
+
+
 class TodoNotFoundError(NotFoundError):
     ...
 

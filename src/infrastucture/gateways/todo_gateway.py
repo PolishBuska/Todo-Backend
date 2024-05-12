@@ -21,7 +21,7 @@ class TodoGateway:
                 name=todo.name,
                 desc=todo.desc,
                 owner_id=owner_uuid
-            ).returning(self._model)
+            ).options(noload(self._model.notes)).returning(self._model)
             res = await self._uow.execute(stmt)
             res = res.scalar()
             await self._uow.commit()

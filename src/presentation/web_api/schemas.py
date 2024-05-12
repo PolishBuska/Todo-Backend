@@ -4,6 +4,8 @@ import datetime
 
 from pydantic import BaseModel, Field, ConfigDict
 
+from domain.models import Todo
+
 
 class TodoBase(BaseModel):
     name: str = Field(min_length=1, max_length=40)
@@ -35,7 +37,12 @@ class TodoReturned(TodoBase):
     owner_id: UUID
     created_at: datetime.datetime
     updated_at: datetime.datetime
-    notes: List[NoteBase] | None = None
+    notes: List[NoteReturned] | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ListTodoReturned(BaseModel):
+    todos: List[Todo]
     model_config = ConfigDict(from_attributes=True)
 
 

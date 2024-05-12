@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from domain.exceptions import NoteAlreadyExist, NoteNotFoundError
+from domain.exceptions import NoteAlreadyExist, NoteNotFoundError, NoteNotFoundByPk
 from domain.models import EmptyNote
 from domain.note_ioc_interface import INoteIoC
 from domain.todo_ioc_interface import ITodoIoC
@@ -57,3 +57,23 @@ async def create_note(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This note already exist") from nae
 
 
+@note_router.put('/{todo_id}/notes/{note_id}')
+async def update_note(
+        ioc: Annotated[INoteIoC, Depends(Stub(INoteIoC))],
+        note: NoteCreated,
+        todo_id: UUID,
+        note_id: UUID,
+        owner_id: UUID
+):
+    note = EmptyNote(**note.model_dump())
+    try:
+        async with ioc.update_note(
+                todo_id=todo_id,
+                note_id=note_id,
+                owner_id=owner_id,
+                note=note
+        ) as interactor:
+            res = await interactor()
+            return res
+    except NoteNotFoundByPk as nnf:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found') from nnf

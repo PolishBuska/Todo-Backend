@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 from sqlalchemy.exc import IntegrityError
 
 from domain.models import EmptyNote, TodoID, Note
@@ -36,4 +36,14 @@ class NoteGateway:
         res = await self._session.scalar(query)
         if not res:
             raise NotFoundError
+        return Note(**res.to_dict())
+
+    async def update_note(self, note: EmptyNote, note_id: UUID, todo_id: UUID, owner_id: UUID) -> Note:
+        stmt = update(self._model).values(name=note.name, content=note.content).where(
+            (self._model.todo_id_fk == todo_id) & (self._model.note_id == note_id)
+            & (self._model.owner_id == owner_id)
+        ).returning(self._model)
+        res = await self._session.execute(stmt)
+        res = res.scalar()
+        await self._session.commit()
         return Note(**res.to_dict())

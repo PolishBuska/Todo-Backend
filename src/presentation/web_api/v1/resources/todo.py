@@ -9,7 +9,7 @@ from domain.todo_ioc_interface import ITodoIoC
 
 from infrastucture.stub import Stub
 
-from presentation.web_api.schemas import TodoCreated, TodoReturned, TodoDeleted
+from presentation.web_api.schemas import TodoCreated, TodoReturned, TodoDeleted, ListTodoReturned
 
 todo_router = APIRouter(
 
@@ -66,7 +66,7 @@ async def update_todo(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found') from tnf
 
 
-@todo_router.get('/', response_model=List[TodoReturned])
+@todo_router.get('/', response_model=ListTodoReturned)
 async def get_todos_owner(
         ioc: Annotated[ITodoIoC, Depends(Stub(ITodoIoC))],
         owner_id: UUID
@@ -74,6 +74,7 @@ async def get_todos_owner(
     try:
         async with ioc.get_todos_owner(owner_id) as interactor:
             res = await interactor()
+            res = ListTodoReturned(todos=res)
             return res
     except TodoNotFoundByPk as tnf:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found') from tnf

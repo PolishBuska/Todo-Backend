@@ -4,6 +4,7 @@ from uuid import UUID
 from domain.models import EmptyNote, NoteID, TodoID, Note
 from src.application.interactors.create_note import CreateNote
 from src.application.interactors.get_note import GetNote
+from src.application.interactors.update_note import UpdateNote
 
 
 class CNoteIoC:
@@ -26,4 +27,14 @@ class CNoteIoC:
             note_id=note_id,
             todo_id=todo_id,
             owner_id=owner_id
+        )
+
+    @asynccontextmanager
+    async def update_note(self, note_id: UUID, owner_id: UUID, note: EmptyNote, todo_id: UUID) -> Note:
+        yield UpdateNote(
+            note_db_gateway=self._note_db_gateway,
+            note_id=note_id,
+            todo_id=todo_id,
+            owner_id=owner_id,
+            note=note
         )

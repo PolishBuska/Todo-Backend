@@ -8,19 +8,19 @@ from domain.models import EmptyNote, NoteID, Note, TodoID
 class INoteIoC(ABC):
 
     @abstractmethod
-    async def create_note(self, note: EmptyNote, owner_uuid, todo_id: Annotated[UUID, TodoID]) -> NoteID:
+    async def create_note(self, note: EmptyNote, owner_id, todo_id: UUID) -> NoteID:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_note(self, note_id: NoteID, owner_uuid) -> Note:
+    async def get_note(self, todo_id: UUID, note_id: UUID, owner_id: UUID) -> Note:
         raise NotImplementedError
 
     @abstractmethod
-    async def update_note_status(self, status, note_id: NoteID, owner_uuid) -> Note:
+    async def update_note_status(self, status, note_id: NoteID, owner_uuid: UUID) -> Note:
         raise NotImplementedError
 
     @abstractmethod
-    async def list_notes(self, owner_id, todo_id: TodoID) -> List[Note]:
+    async def list_notes(self, owner_id: UUID, todo_id: TodoID) -> List[Note]:
         raise NotImplementedError
 
     @abstractmethod

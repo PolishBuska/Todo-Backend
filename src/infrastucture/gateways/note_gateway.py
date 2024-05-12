@@ -1,9 +1,11 @@
-from dataclasses import asdict
+from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert
+from sqlalchemy import insert, select
+from sqlalchemy.exc import IntegrityError
 
-from domain.models import EmptyNote, TodoID
+from domain.models import EmptyNote, TodoID, Note
+from domain.exceptions import NoteIntegrityError, NotFoundError
 
 
 class NoteGateway:
@@ -11,14 +13,27 @@ class NoteGateway:
         self._session = session
         self._model = model
 
-    async def create_note(self, note: EmptyNote, owner_uuid, todo_id: TodoID):
-        stmt = insert(self._model).values(
-            asdict(note),
-            owner_uuid=owner_uuid,
-            todo_id_fk=todo_id
-        ).returning(self._model)
-        result = await self._session.execute(stmt)
-        await self._session.flush()
+    async def create_note(self, note: EmptyNote, owner_id, todo_id: TodoID):
+        try:
+            stmt = insert(self._model).values(
+                name=note.name,
+                content=note.content,
+                owner_id=owner_id,
+                todo_id_fk=todo_id
+            ).returning(self._model)
+            result = await self._session.execute(stmt)
+            await self._session.commit()
+            result = result.scalar()
+            return Note(**result.to_dict())
+        except IntegrityError as ie:
+            raise NoteIntegrityError from ie
 
-        result = result.fetchone()
-        return result
+    async def get_note(self, note_id: UUID, todo_id: UUID, owner_id: UUID) -> Note:
+        query = select(self._model).where(
+            (self._model.note_id == note_id) & (self._model.todo_id_fk == todo_id) &
+            (self._model.owner_id == owner_id)
+        )
+        res = await self._session.scalar(query)
+        if not res:
+            raise NotFoundError
+        return Note(**res.to_dict())

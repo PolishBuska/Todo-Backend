@@ -77,3 +77,22 @@ async def update_note(
             return res
     except NoteNotFoundByPk as nnf:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found') from nnf
+
+
+@note_router.delete('/{todo_id}/notes/{note_id}')
+async def delete_note(
+        ioc: Annotated[INoteIoC, Depends(Stub(INoteIoC))],
+        note_id: UUID,
+        todo_id: UUID,
+        owner_id: UUID
+):
+    try:
+        async with ioc.delete_note(
+            owner_id=owner_id,
+            todo_id=todo_id,
+            note_id=note_id
+        ) as interactor:
+            res = await interactor()
+            return res
+    except NoteNotFoundByPk as nnf:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found') from nnf

@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, select, update
+from sqlalchemy import insert, select, update, delete
 from sqlalchemy.exc import IntegrityError
 
 from domain.models import EmptyNote, TodoID, Note
@@ -47,3 +47,16 @@ class NoteGateway:
         res = res.scalar()
         await self._session.commit()
         return Note(**res.to_dict())
+
+    async def delete_note(self, note_id: UUID, todo_id: UUID, owner_id: UUID) -> UUID:
+        stmt = delete(self._model).where(
+            (self._model.note_id == note_id) &
+            (self._model.todo_id_fk == todo_id) &
+            (self._model.owner_id == owner_id)
+        ).returning(self._model.note_id)
+        res = await self._session.execute(stmt)
+        await self._session.commit()
+        res = res.scalar()
+        if not res:
+            raise NotFoundError
+        return res

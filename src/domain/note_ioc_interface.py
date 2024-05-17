@@ -26,3 +26,7 @@ class INoteIoC(ABC):
     @abstractmethod
     async def update_note(self, note: EmptyNote, owner_id: UUID, note_id: UUID, todo_id: UUID) -> Note:
         raise NotImplementedError
+
+    @abstractmethod
+    async def delete_note(self, owner_id: UUID, note_id: UUID, todo_id: UUID) -> UUID:
+        raise NotImplementedError

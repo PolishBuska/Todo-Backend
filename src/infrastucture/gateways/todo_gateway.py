@@ -39,7 +39,20 @@ class TodoGateway:
     async def get_todo_notes(self, todo_id: UUID, owner_id: UUID) -> Todo:
         query = select(self._model).options(
             selectinload(self._model.notes)
-        ).where((self._model.todo_id == todo_id) & (self._model.owner_id == owner_id))
+        ).where(
+            (self._model.todo_id == todo_id) & (self._model.owner_id == owner_id)
+        )
+        res = await self._uow.scalar(query)
+
+        return Todo(**res.to_dict())
+
+    async def get_todo_notes_option(self, todo_id: UUID, owner_id: UUID, select_option: bool) -> Todo:
+        query = select(self._model).options(
+            selectinload(self._model.notes)
+        ).where(
+            (self._model.todo_id == todo_id) & (self._model.owner_id == owner_id) &
+            (self._model.notes.status == select_option)
+        )
         res = await self._uow.scalar(query)
 
         return Todo(**res.to_dict())
@@ -47,6 +60,8 @@ class TodoGateway:
     async def get_todos_owner(self, owner_id: UUID) -> List[Todo]:
         query = select(self._model).options(noload(self._model.notes)).where(self._model.owner_id == owner_id)
         res = await self._uow.scalars(query)
+        if not res:
+            raise TodoNotFoundError
 
         res = [(Todo(**todo.to_dict())) for todo in res.all()]
         return res
@@ -78,3 +93,13 @@ class TodoGateway:
             item_id=res,
             success=True
         )
+
+    async def confirm_todo(self, todo_id: UUID, owner_id: UUID) -> Todo:
+        stmt = update(self._model).where(
+            (self._model.todo_id == todo_id) &
+            (self._model.owner_id == owner_id)
+        ).values(status=True).returning(self._model)
+        res = await self._uow.execute(stmt)
+        res = res.scalar()
+        await self._uow.commit()
+        return Todo(**res.to_dict())

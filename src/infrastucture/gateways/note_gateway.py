@@ -44,6 +44,8 @@ class NoteGateway:
             & (self._model.owner_id == owner_id)
         ).returning(self._model)
         res = await self._session.execute(stmt)
+        if not res:
+            raise NotFoundError
         res = res.scalar()
         await self._session.commit()
         return Note(**res.to_dict())

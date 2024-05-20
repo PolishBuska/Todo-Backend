@@ -9,7 +9,7 @@ services:
 
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=7861
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_HOST=${DATABASE_HOSTNAME}
     restart: on-failure
     healthcheck:

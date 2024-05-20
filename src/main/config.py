@@ -2,7 +2,9 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings(BaseSettings):
+class Settings(
+    BaseSettings,
+):
     app_host: str
     app_port: int
     database_hostname: str

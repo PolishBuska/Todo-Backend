@@ -1,12 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
 
-from domain.todo_interactor_interface import ITodoInteractor
+from domain.todo_ioc_interface import ITodoIoC
+from domain.note_ioc_interface import INoteIoC
 from presentation.web_api.main import main_router_factory
 
-from src.infrastucture.impl_dependencies.create_todo import todo_interactor_factory
+from infrastucture.impl_dependencies.create_todo import todo_ioc_factory
+from infrastucture.impl_dependencies.note import note_ioc_factory
 
-from src.main.config import get_config
+from main.config import get_config
 
 
 async def app_factory() -> FastAPI:
@@ -38,7 +40,8 @@ async def start_server(app: FastAPI) -> None:
 async def main() -> None:
     config = get_config()
     app = await app_factory()
-    app.dependency_overrides[ITodoInteractor] = todo_interactor_factory
+    app.dependency_overrides[ITodoIoC] = todo_ioc_factory
+    app.dependency_overrides[INoteIoC] = note_ioc_factory
 
     await start_server(app)
 

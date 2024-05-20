@@ -1,3 +1,4 @@
+from domain.exceptions import TodoIntegrityError, TodoAlreadyExist
 from src.domain.models import EmptyTodo, Todo
 
 
@@ -8,6 +9,8 @@ class CreateTodo:
         self._owner_id = owner_id
 
     async def __call__(self) -> Todo:
-        todo = await self._todo_db_gateway.create_todo(self._todo, self._owner_id)
-        return todo
-
+        try:
+            todo = await self._todo_db_gateway.create_todo(self._todo, self._owner_id)
+            return todo
+        except TodoIntegrityError as tie:
+            raise TodoAlreadyExist from tie

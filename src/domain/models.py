@@ -1,4 +1,4 @@
-from typing import NewType, List, Annotated, NamedTuple, TypeVar
+from typing import NewType, List, Annotated, NamedTuple, TypeVar, Optional
 from uuid import UUID
 from dataclasses import dataclass
 
@@ -8,24 +8,15 @@ NoteID = NewType('NoteID', UUID)
 
 
 @dataclass
-class Note:
-    title: str
-    content: str
-
-
-@dataclass
 class EmptyTodo:
     name: str
     desc: str
 
 
 @dataclass
-class Todo(EmptyTodo):
-    owner_id: UUID
-    todo_id: TodoID
-    created_at: str
-    updated_at: str
-    notes: Annotated[List[Note], None] = None
+class TodoNotesStatusDTO(EmptyTodo):
+    todo_id: UUID
+    select_status: Optional[bool] = None
 
 
 @dataclass
@@ -37,9 +28,20 @@ class EmptyNote:
 @dataclass
 class Note(EmptyNote):
     owner_id: UUID
-    note_id: NoteID
+    note_id: UUID
     created_at: str
     updated_at: str
+    status: bool
+
+
+@dataclass
+class Todo(EmptyTodo):
+    owner_id: UUID
+    todo_id: UUID
+    created_at: str
+    updated_at: str
+    status: bool
+    notes: Annotated[List[Note], None] = None
 
 
 @dataclass

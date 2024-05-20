@@ -3,13 +3,13 @@ from typing import AsyncContextManager
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
 
-from src.main.config import Settings, get_config
+from main.config import Settings, get_config
 
 
 class Database:
     def __init__(self, config: Settings):
         self._config = config
-        self._engine = create_async_engine(url=self._config.db_url, echo=True)
+        self._engine = create_async_engine(url=self._config.db_url, echo=False)
 
     @property
     def engine(self):

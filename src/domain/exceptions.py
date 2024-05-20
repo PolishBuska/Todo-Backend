@@ -17,6 +17,14 @@ class NoteInteractorError(InteractorError):
     ...
 
 
+class TodoNotesEmptyError(InteractorError):
+    ...
+
+
+class TodoNotesStatusFalse(InteractorError):
+    ...
+
+
 class TodoAlreadyExist(TodoInteractorError):
     ...
 

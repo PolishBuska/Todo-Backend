@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from domain.exceptions import NoteNotFoundError, NoteNotFoundByPk
+from domain.exceptions import NoteNotFoundError, NoteNotFoundByPk, NotFoundError
 from src.domain.models import Note, EmptyNote
 
 
@@ -21,5 +21,5 @@ class UpdateNote:
                 note_id=self._note_id
             )
             return todo
-        except NoteNotFoundError as tnf:
-            raise NoteNotFoundByPk from tnf
+        except NotFoundError as nfe:
+            raise NoteNotFoundError from nfe

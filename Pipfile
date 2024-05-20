@@ -8,6 +8,8 @@ fastapi = {extras = ["all"], version = "*"}
 sqlalchemy = "*"
 alembic = "*"
 asyncpg = "*"
+pre-commit = "*"
+pylint = "*"
 
 [dev-packages]
 

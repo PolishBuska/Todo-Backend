@@ -3,6 +3,7 @@ from typing import List, Annotated
 from uuid import UUID
 
 from domain.models import EmptyTodo, TodoID, Todo, DeletedResult
+from domain.models import TodoNotesStatusDTO
 
 
 class ITodoIoC(ABC):
@@ -16,11 +17,11 @@ class ITodoIoC(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_todo_status(self, status, todo_id: TodoID, owner_uuid) -> Todo:
+    async def confirm_todo(self, todo_id: UUID, owner_id) -> Todo:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_todo_notes(self, todo_id: UUID, owner_id: UUID) -> Todo:
+    async def get_todo_notes(self, todo_notes_query_dto: TodoNotesStatusDTO, owner_id: UUID) -> Todo:
         raise NotImplementedError
 
     @abstractmethod

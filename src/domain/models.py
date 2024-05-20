@@ -14,7 +14,7 @@ class EmptyTodo:
 
 
 @dataclass
-class TodoNotesStatusDTO(EmptyTodo):
+class TodoNotesStatusDTO:
     todo_id: UUID
     select_status: Optional[bool] = None
 

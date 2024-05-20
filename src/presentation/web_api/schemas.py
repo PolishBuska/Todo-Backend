@@ -1,8 +1,9 @@
-from typing import Annotated, List
+from enum import Enum
+from typing import Annotated, List, Optional
 from uuid import UUID
 import datetime
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, validator, field_validator
 
 from domain.models import Todo
 
@@ -30,6 +31,7 @@ class NoteReturned(NoteBase):
     note_id: UUID
     created_at: datetime.datetime
     updated_at: datetime.datetime
+    status: bool
 
 
 class TodoReturned(TodoBase):
@@ -37,8 +39,19 @@ class TodoReturned(TodoBase):
     owner_id: UUID
     created_at: datetime.datetime
     updated_at: datetime.datetime
+    status: bool
     notes: List[NoteReturned] | None = None
     model_config = ConfigDict(from_attributes=True)
+
+
+class Status(str, Enum):
+    confirmed = 'confirmed'
+    unconfirmed = 'unconfirmed'
+
+
+class TodoNotesStatus(BaseModel):
+    todo_id: UUID
+    select_status: Optional[Status] = Field(None, description="Please enter either 'confirmed' or 'unconfirmed'")
 
 
 class ListTodoReturned(BaseModel):

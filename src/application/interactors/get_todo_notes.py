@@ -24,15 +24,13 @@ class GetTodoNotes:
                 if self._dto.select_status is True:
                     result = await self._todo_db_gateway.get_todo_notes_option(
                         owner_id=self._owner_id,
-                        todo_id=self._dto.todo_id,
-                        select_option=self._dto.select_status
+                        dto=self._dto
                     )
                     return result
                 elif self._dto.select_status is False:
                     result = await self._todo_db_gateway.get_todo_notes_option(
                         owner_id=self._owner_id,
-                        todo_id=self._dto.todo_id,
-                        select_option=self._dto.select_status
+                        dto=self._dto
                     )
                     return result
         except TodoNotFoundError as tnf:

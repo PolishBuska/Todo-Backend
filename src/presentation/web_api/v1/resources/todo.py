@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from domain.exceptions import TodoAlreadyExist, TodoNotFoundByPk
+from domain.exceptions import TodoAlreadyExist, TodoNotFoundByPk, TodoNotesEmptyError, TodoNotesStatusFalse
 from domain.models import EmptyTodo
 from domain.todo_ioc_interface import ITodoIoC
 
@@ -92,4 +92,34 @@ async def delete_todo(
             return res
     except TodoNotFoundByPk as tnf:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found') from tnf
+
+
+@todo_router.post('/{todo_id}')
+async def confirm_todo(
+        ioc: Annotated[ITodoIoC, Depends(Stub(ITodoIoC))],
+        todo_id: UUID,
+        owner_id: UUID
+):
+    try:
+        async with ioc.confirm_todo(todo_id=todo_id, owner_id=owner_id) as interactor:
+            res = await interactor()
+            return res
+    except TodoNotesEmptyError as tne:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                'message': 'Cannot confirm todo',
+                'reason': 'Todo is empty',
+                'solutions': 'Add at least one note to todo'
+            }
+        ) from tne
+    except TodoNotesStatusFalse as tns:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                'message': 'Cannot confirm todo',
+                'reason': 'All notes must be confirmed first',
+                'solutions': 'Confirm all notes'
+            }
+        ) from tns
 

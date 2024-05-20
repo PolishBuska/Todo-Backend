@@ -3,11 +3,11 @@ from uuid import UUID
 
 from sqlalchemy import insert, select, update, delete
 from sqlalchemy.orm import selectinload, noload
-from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from domain.models import EmptyTodo
 from domain.exceptions import TodoIntegrityError, TodoNotFoundError
-from domain.models import Todo, DeletedResult
+from domain.models import Todo, DeletedResult, TodoNotesStatusDTO
 
 
 class TodoGateway:
@@ -36,26 +36,28 @@ class TodoGateway:
             raise TodoNotFoundError
         return Todo(**res.to_dict())
 
-    async def get_todo_notes(self, todo_id: UUID, owner_id: UUID) -> Todo:
+    async def get_todo_notes(self, dto: TodoNotesStatusDTO, owner_id: UUID) -> Todo:
         query = select(self._model).options(
             selectinload(self._model.notes)
         ).where(
-            (self._model.todo_id == todo_id) & (self._model.owner_id == owner_id)
+            (self._model.todo_id == dto.todo_id) & (self._model.owner_id == owner_id)
         )
         res = await self._uow.scalar(query)
 
         return Todo(**res.to_dict())
 
-    async def get_todo_notes_option(self, todo_id: UUID, owner_id: UUID, select_option: bool) -> Todo:
+    async def get_todo_notes_option(self, dto: TodoNotesStatusDTO, owner_id: UUID) -> Todo:
         query = select(self._model).options(
             selectinload(self._model.notes)
         ).where(
-            (self._model.todo_id == todo_id) & (self._model.owner_id == owner_id) &
-            (self._model.notes.status == select_option)
+            (self._model.todo_id == dto.todo_id) & (self._model.owner_id == owner_id)
         )
         res = await self._uow.scalar(query)
-
-        return Todo(**res.to_dict())
+        if not res:
+            raise TodoNotFoundError
+        if res is not None:
+            res.notes = [note for note in res.notes if note.status == dto.select_status]
+            return Todo(**res.to_dict())
 
     async def get_todos_owner(self, owner_id: UUID) -> List[Todo]:
         query = select(self._model).options(noload(self._model.notes)).where(self._model.owner_id == owner_id)

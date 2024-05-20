@@ -5,10 +5,10 @@ from domain.todo_ioc_interface import ITodoIoC
 from domain.note_ioc_interface import INoteIoC
 from presentation.web_api.main import main_router_factory
 
-from src.infrastucture.impl_dependencies.create_todo import todo_ioc_factory
-from src.infrastucture.impl_dependencies.note import note_ioc_factory
+from infrastucture.impl_dependencies.create_todo import todo_ioc_factory
+from infrastucture.impl_dependencies.note import note_ioc_factory
 
-from src.main.config import get_config
+from main.config import get_config
 
 
 async def app_factory() -> FastAPI:

@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from uuid import UUID
 
-from domain.models import EmptyTodo, TodoID, Todo, DeletedResult
+from domain.models import EmptyTodo, TodoID, Todo, DeletedResult, TodoNotesStatusDTO
 
 from application.interactors.create_todo import CreateTodo
 from application.interactors.get_todo import GetTodo
@@ -9,6 +9,8 @@ from application.interactors.get_todo_notes import GetTodoNotes
 from application.interactors.get_todos_owner import GetTodoOwner
 from application.interactors.update_todo import UpdateTodo
 from application.interactors.delete_todo import DeleteTodo
+from application.interactors.confirm_todo import ConfirmTodo
+
 
 class CTodoIoC:
     def __init__(self, todo_db_gateway):
@@ -31,9 +33,9 @@ class CTodoIoC:
         )
 
     @asynccontextmanager
-    async def get_todo_notes(self, todo_id: UUID, owner_id: UUID) -> Todo:
+    async def get_todo_notes(self, todo_notes_query_dto: TodoNotesStatusDTO, owner_id: UUID) -> Todo:
         yield GetTodoNotes(
-            todo_id=todo_id,
+            todo_notes_status_dto=todo_notes_query_dto,
             owner_id=owner_id,
             todo_db_gateway=self._todo_db_gateway
         )
@@ -61,3 +63,12 @@ class CTodoIoC:
             owner_id=owner_id,
             todo_db_gateway=self._todo_db_gateway
         )
+
+    @asynccontextmanager
+    async def confirm_todo(self, todo_id: UUID, owner_id: UUID) -> Todo:
+        yield ConfirmTodo(
+            todo_id=todo_id,
+            owner_id=owner_id,
+            todo_db_gateway=self._todo_db_gateway
+        )
+

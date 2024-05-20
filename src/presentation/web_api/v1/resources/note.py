@@ -1,14 +1,14 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 
-from domain.exceptions import NoteAlreadyExist, NoteNotFoundError, NoteNotFoundByPk
-from domain.models import EmptyNote
+from domain.exceptions import NoteAlreadyExist, NoteNotFoundError, NoteNotFoundByPk, TodoNotFoundByPk
+from domain.models import EmptyNote, TodoNotesStatusDTO
 from domain.note_ioc_interface import INoteIoC
 from domain.todo_ioc_interface import ITodoIoC
 from infrastucture.stub import Stub
-from presentation.web_api.schemas import TodoReturned, NoteCreated, NoteReturned
+from presentation.web_api.schemas import TodoReturned, NoteCreated, NoteReturned, TodoNotesStatus, Status
 
 note_router = APIRouter(
 
@@ -32,13 +32,34 @@ async def get_note(
 
 @note_router.get('/{todo_id}/notes', response_model=TodoReturned)
 async def get_todo_notes(
-        todo_id: UUID,
         owner_id: UUID,
+        todo_notes_data: Annotated[Query, Depends(TodoNotesStatus)],
         ioc: Annotated[ITodoIoC, Depends(Stub(ITodoIoC))]
 ):
-    async with ioc.get_todo_notes(todo_id=todo_id, owner_id=owner_id) as interactor:
-        res = await interactor()
-        return res
+    try:
+        if todo_notes_data.select_status == Status.confirmed:
+            data = TodoNotesStatusDTO(
+                todo_id=todo_notes_data.todo_id,
+                select_status=True
+            )
+        else:
+            data = TodoNotesStatusDTO(
+                todo_id=todo_notes_data.todo_id,
+                select_status=False
+            )
+
+        async with ioc.get_todo_notes(todo_notes_query_dto=data, owner_id=owner_id) as interactor:
+            res = await interactor()
+            return res
+    except TodoNotFoundByPk as tnf:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                'message': 'This todo does not exist',
+                'reason': 'We could not find it',
+                'solutions': 'Check if it exists'
+            }
+        ) from tnf
 
 
 @note_router.post('/{todo_id}/notes')

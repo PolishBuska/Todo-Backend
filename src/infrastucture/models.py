@@ -4,7 +4,9 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Column, ForeignKey, TIMESTAMP, func
 
-from src.infrastucture.database import get_base
+from infrastucture.database import get_base
+
+from domain.models import Note as DomainNote
 
 
 Base = get_base()
@@ -24,6 +26,7 @@ class Todo(Base):
                         nullable=False,
                         server_default=func.now(),
                         onupdate=func.now())
+    status: Mapped[bool] = mapped_column(default=False, nullable=True)
     notes: Mapped[list["Note"]] = relationship(back_populates='todo', cascade="all, delete")
 
     def to_dict(self):
@@ -34,7 +37,8 @@ class Todo(Base):
             "desc": self.desc,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
-            "notes": self.notes
+            "status": self.status,
+            "notes": [DomainNote(**param.to_dict()) for param in self.notes],
         }
 
 
@@ -53,6 +57,7 @@ class Note(Base):
                         nullable=False,
                         server_default=func.now(),
                         onupdate=func.now())
+    status: Mapped[bool] = mapped_column(default=False, nullable=True)
     todo: Mapped["Todo"] = relationship(back_populates="notes")
 
     def to_dict(self):
@@ -63,4 +68,5 @@ class Note(Base):
             "content": self.content,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
+            "status": self.status
         }

@@ -1,10 +1,12 @@
+from typing import List
 from uuid import UUID
+from dataclasses import asdict
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, update, delete
 from sqlalchemy.exc import IntegrityError
 
-from domain.models import EmptyNote, TodoID, Note
+from domain.models import EmptyNote, TodoID, Note, IdentityOwnership, NoteIdList
 from domain.exceptions import NoteIntegrityError, NotFoundError
 
 
@@ -62,3 +64,31 @@ class NoteGateway:
         if not res:
             raise NotFoundError
         return res
+
+    async def confirm_note(self, note_confirmation: IdentityOwnership, todo_id: UUID) -> Note:
+        stmt = update(self._model).where(
+            (self._model.note_id == note_confirmation.note_id) &
+            (self._model.owner_id == note_confirmation.owner_id) &
+            (self._model.todo_id_fk == todo_id)
+        ).values(status=True).returning(self._model)
+        res = await self._session.execute(stmt)
+        if not res:
+            raise NotFoundError
+        await self._session.flush()
+        res = res.scalar()
+        return Note(**res.to_dict())
+
+    async def confirm_notes(self, note_confirmation: NoteIdList, todo_id: UUID) -> List[Note]:
+        stmt = update(self._model).where(
+
+            (self._model.note_id.in_([note["note_id"] for note in note_confirmation.notes])) &
+            (self._model.owner_id.in_([note["owner_id"] for note in note_confirmation.notes])) &
+            (self._model.todo_id_fk == todo_id)
+        ).values(status=True).returning(self._model)
+
+        res = await self._session.execute(stmt)
+
+        res = res.scalars().all()
+        if not res:
+            raise NotFoundError
+        return [note.to_dict() for note in res]

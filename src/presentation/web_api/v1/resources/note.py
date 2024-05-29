@@ -4,11 +4,18 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 
 from domain.exceptions import NoteAlreadyExist, NoteNotFoundError, NoteNotFoundByPk, TodoNotFoundByPk
-from domain.models import EmptyNote, TodoNotesStatusDTO
-from domain.note_ioc_interface import INoteIoC
-from domain.todo_ioc_interface import ITodoIoC
+from domain.models import EmptyNote, TodoNotesStatusDTO, IdentityOwnership, NoteIdList as DomainNoteIdList
+from presentation.note_ioc_interface import INoteIoC
+from presentation.todo_ioc_interface import ITodoIoC
 from infrastucture.stub import Stub
-from presentation.web_api.schemas import TodoReturned, NoteCreated, NoteReturned, TodoNotesStatus, Status
+from presentation.web_api.schemas import (
+    TodoReturned,
+    NoteCreated,
+    NoteReturned,
+    TodoNotesStatus,
+    Status,
+    NoteIdList
+)
 
 note_router = APIRouter(
 
@@ -113,6 +120,38 @@ async def delete_note(
             todo_id=todo_id,
             note_id=note_id
         ) as interactor:
+            res = await interactor()
+            return res
+    except NoteNotFoundByPk as nnf:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found') from nnf
+
+
+@note_router.post('/{todo_id}/notes/{note_id}')
+async def confirm_note(
+        ioc: Annotated[INoteIoC, Depends(Stub(INoteIoC))],
+        todo_id: UUID,
+        note_id: UUID,
+        owner_id: UUID
+):
+    data = IdentityOwnership(
+        note_id=note_id,
+        owner_id=owner_id
+    )
+    async with ioc.confirm_note(identity_ownership=data, todo_id=todo_id) as interactor:
+        res = await interactor()
+        return res
+
+
+@note_router.put('/{todo_id}/notes/')
+async def confirm_notes(
+        ioc: Annotated[INoteIoC, Depends(Stub(INoteIoC))],
+        notes_list: NoteIdList,
+        todo_id: UUID
+):
+    try:
+        data = DomainNoteIdList(**notes_list.model_dump())
+
+        async with ioc.confirm_notes(identity_ownership_list=data, todo_id=todo_id) as interactor:
             res = await interactor()
             return res
     except NoteNotFoundByPk as nnf:

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Annotated
 from uuid import UUID
 
-from domain.models import EmptyNote, NoteID, Note, TodoID
+from domain.models import EmptyNote, NoteID, Note, TodoID, IdentityOwnership, NoteIdList
 
 
 class INoteIoC(ABC):
@@ -29,4 +29,12 @@ class INoteIoC(ABC):
 
     @abstractmethod
     async def delete_note(self, owner_id: UUID, note_id: UUID, todo_id: UUID) -> UUID:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def confirm_note(self, identity_ownership: IdentityOwnership, todo_id: UUID) -> Note:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def confirm_notes(self, identity_ownership_list: NoteIdList, todo_id: UUID) -> List[Note]:
         raise NotImplementedError

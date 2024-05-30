@@ -5,7 +5,7 @@ import datetime
 
 from pydantic import BaseModel, Field, ConfigDict, validator, field_validator
 
-from domain.models import Todo
+from src.domain.models import Todo
 
 
 class TodoBase(BaseModel):
@@ -32,6 +32,15 @@ class NoteReturned(NoteBase):
     created_at: datetime.datetime
     updated_at: datetime.datetime
     status: bool
+
+
+class IdentityOwnership(BaseModel):
+    owner_id: UUID
+    note_id: UUID
+
+
+class NoteIdList(BaseModel):
+    notes: List[IdentityOwnership]
 
 
 class TodoReturned(TodoBase):

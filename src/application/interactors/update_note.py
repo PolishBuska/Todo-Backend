@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from domain.exceptions import NoteNotFoundError, NoteNotFoundByPk, NotFoundError
+from src.domain.exceptions import NoteNotFoundError, NoteNotFoundByPk, NotFoundError
 from src.domain.models import Note, EmptyNote
 
 

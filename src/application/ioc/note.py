@@ -2,13 +2,13 @@ from contextlib import asynccontextmanager
 from typing import List
 from uuid import UUID
 
-from domain.models import EmptyNote, NoteID, TodoID, Note, IdentityOwnership, NoteIdList
-from application.interactors.create_note import CreateNote
-from application.interactors.get_note import GetNote
-from application.interactors.update_note import UpdateNote
-from application.interactors.delete_note import DeleteNote
-from application.interactors.confirm_note import ConfirmNote
-from application.interactors.confirm_notes import ConfirmNotes
+from src.domain.models import EmptyNote, NoteID, TodoID, Note, IdentityOwnership, NoteIdList
+from src.application.interactors.create_note import CreateNote
+from src.application.interactors.get_note import GetNote
+from src.application.interactors.update_note import UpdateNote
+from src.application.interactors.delete_note import DeleteNote
+from src.application.interactors.confirm_note import ConfirmNote
+from src.application.interactors.confirm_notes import ConfirmNotes
 
 
 class CNoteIoC:

@@ -4,9 +4,9 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Column, ForeignKey, TIMESTAMP, func
 
-from infrastucture.database import get_base
+from src.infrastucture.database import get_base
 
-from domain.models import Note as DomainNote
+from src.domain.models import Note as DomainNote
 
 
 Base = get_base()

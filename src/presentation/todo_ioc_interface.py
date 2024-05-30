@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, Annotated
 from uuid import UUID
 
-from domain.models import EmptyTodo, TodoID, Todo, DeletedResult
-from domain.models import TodoNotesStatusDTO
+from src.domain.models import EmptyTodo, TodoID, Todo, DeletedResult
+from src.domain.models import TodoNotesStatusDTO
 
 
 class ITodoIoC(ABC):

@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from domain.models import Note, NoteIdList
-from domain.exceptions import NotFoundError, NoteNotFoundByPk
+from src.domain.models import Note, NoteIdList
+from src.domain.exceptions import NotFoundError, NoteNotFoundByPk
 
-from application.common.uow import Commiter
+from src.application.common.uow import Commiter
 
 
 class ConfirmNotes:

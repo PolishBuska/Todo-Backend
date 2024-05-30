@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from domain.exceptions import TodoNotesEmptyError, TodoNotesStatusFalse
+from src.domain.exceptions import TodoNotesEmptyError, TodoNotesStatusFalse
 
 
 class ConfirmTodo:

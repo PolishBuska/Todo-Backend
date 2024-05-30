@@ -1,4 +1,4 @@
-from domain.exceptions import TodoIntegrityError, TodoAlreadyExist
+from src.domain.exceptions import TodoIntegrityError, TodoAlreadyExist
 from src.domain.models import EmptyTodo, Todo
 
 

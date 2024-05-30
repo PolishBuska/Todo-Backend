@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Annotated
 from uuid import UUID
 
-from domain.models import EmptyNote, NoteID, Note, TodoID, IdentityOwnership, NoteIdList
+from src.domain.models import EmptyNote, NoteID, Note, TodoID, IdentityOwnership, NoteIdList
 
 
 class INoteIoC(ABC):

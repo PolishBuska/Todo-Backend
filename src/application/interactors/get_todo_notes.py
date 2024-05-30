@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from domain.exceptions import TodoNotFoundError, TodoNotFoundByPk
-from domain.models import Todo, TodoNotesStatusDTO
+from src.domain.exceptions import TodoNotFoundError, TodoNotFoundByPk
+from src.domain.models import Todo, TodoNotesStatusDTO
 
 
 class GetTodoNotes:

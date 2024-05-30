@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from domain.exceptions import TodoNotFoundError, TodoNotFoundByPk
+from src.domain.exceptions import TodoNotFoundError, TodoNotFoundByPk
 from src.domain.models import EmptyTodo, Todo
 
 

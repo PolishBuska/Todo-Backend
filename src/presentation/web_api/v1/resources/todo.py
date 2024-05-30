@@ -1,15 +1,15 @@
-from typing import Annotated, List
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from domain.exceptions import TodoAlreadyExist, TodoNotFoundByPk, TodoNotesEmptyError, TodoNotesStatusFalse
-from domain.models import EmptyTodo
-from domain.todo_ioc_interface import ITodoIoC
+from src.domain.exceptions import TodoAlreadyExist, TodoNotFoundByPk, TodoNotesEmptyError, TodoNotesStatusFalse
+from src.domain.models import EmptyTodo
+from src.presentation.todo_ioc_interface import ITodoIoC
 
-from infrastucture.stub import Stub
+from src.infrastucture.stub import Stub
 
-from presentation.web_api.schemas import TodoCreated, TodoReturned, TodoDeleted, ListTodoReturned
+from src.presentation.web_api.schemas import TodoCreated, TodoReturned, TodoDeleted, ListTodoReturned
 
 todo_router = APIRouter(
 

@@ -3,7 +3,7 @@ from typing import AsyncContextManager
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
 
-from main.config import Settings, get_config
+from src.main.config import Settings, get_config
 
 
 class Database:

@@ -5,9 +5,10 @@ from sqlalchemy import insert, select, update, delete
 from sqlalchemy.orm import selectinload, noload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from domain.models import EmptyTodo
-from domain.exceptions import TodoIntegrityError, TodoNotFoundError
-from domain.models import Todo, DeletedResult, TodoNotesStatusDTO
+
+from src.domain.models import EmptyTodo
+from src.domain.exceptions import TodoIntegrityError, TodoNotFoundError
+from src.domain.models import Todo, DeletedResult, TodoNotesStatusDTO
 
 
 class TodoGateway:

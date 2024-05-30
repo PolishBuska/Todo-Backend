@@ -1,15 +1,15 @@
 from contextlib import asynccontextmanager
 from uuid import UUID
 
-from domain.models import EmptyTodo, TodoID, Todo, DeletedResult, TodoNotesStatusDTO
+from src.domain.models import EmptyTodo, TodoID, Todo, DeletedResult, TodoNotesStatusDTO
 
-from application.interactors.create_todo import CreateTodo
-from application.interactors.get_todo import GetTodo
-from application.interactors.get_todo_notes import GetTodoNotes
-from application.interactors.get_todos_owner import GetTodoOwner
-from application.interactors.update_todo import UpdateTodo
-from application.interactors.delete_todo import DeleteTodo
-from application.interactors.confirm_todo import ConfirmTodo
+from src.application.interactors.create_todo import CreateTodo
+from src.application.interactors.get_todo import GetTodo
+from src.application.interactors.get_todo_notes import GetTodoNotes
+from src.application.interactors.get_todos_owner import GetTodoOwner
+from src.application.interactors.update_todo import UpdateTodo
+from src.application.interactors.delete_todo import DeleteTodo
+from src.application.interactors.confirm_todo import ConfirmTodo
 
 
 class CTodoIoC:

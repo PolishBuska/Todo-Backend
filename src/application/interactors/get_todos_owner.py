@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from domain.exceptions import TodoNotFoundError, TodoNotFoundByPk
-from domain.models import Todo
+from src.domain.exceptions import TodoNotFoundError, TodoNotFoundByPk
+from src.domain.models import Todo
 
 
 class GetTodoOwner:

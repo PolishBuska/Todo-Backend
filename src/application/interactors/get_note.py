@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from domain.exceptions import NotFoundError, NoteNotFoundError
-from domain.models import Todo, Note
+from src.domain.exceptions import NotFoundError, NoteNotFoundError
+from src.domain.models import Todo, Note
 
 
 class GetNote:

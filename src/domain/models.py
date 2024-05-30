@@ -20,6 +20,20 @@ class TodoNotesStatusDTO:
 
 
 @dataclass
+class IdentityOwnership:
+    note_id: UUID
+    owner_id: UUID
+
+    def __getitem__(self, item):
+        return self.__getitem__(item)
+
+
+@dataclass
+class NoteIdList:
+    notes: List[IdentityOwnership]
+
+
+@dataclass
 class EmptyNote:
     name: str
     content: str

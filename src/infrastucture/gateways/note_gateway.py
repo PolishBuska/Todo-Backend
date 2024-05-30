@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, update, delete
 from sqlalchemy.exc import IntegrityError
 
-from domain.models import EmptyNote, TodoID, Note, IdentityOwnership, NoteIdList
-from domain.exceptions import NoteIntegrityError, NotFoundError
+from src.domain.models import EmptyNote, TodoID, Note, IdentityOwnership, NoteIdList
+from src.domain.exceptions import NoteIntegrityError, NotFoundError
 
 
 class NoteGateway:

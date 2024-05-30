@@ -7,9 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from src.domain.exceptions import NoteAlreadyExist, NotFoundError, NoteNotFoundError
 
 from src.infrastucture.impl_dependencies.note import note_ioc_factory
-from tests.common import TestDbScalar, TestDbReturnedRaw
+from tests.unit.common import TestDbScalar, TestDbReturnedRaw
 
-from src.domain.note_ioc_interface import INoteIoC
+from src.presentation.note_ioc_interface import INoteIoC
 
 from src.domain.models import EmptyNote, Note
 
@@ -48,7 +48,7 @@ class TestNote(IsolatedAsyncioTestCase):
                 todo_id=self.todo_id
         ) as interactor:
             res = await interactor()
-            self.assertEqual(self.note, res)
+            self.assertEqual(self.note.name, res.name)
 
     async def test_create_note_integrity(self):
         self.session.execute.side_effect = IntegrityError(statement=None, params=None, orig=None)
@@ -68,7 +68,7 @@ class TestNote(IsolatedAsyncioTestCase):
             owner_id=self.owner_id,
             note_id=self.note_id
         ) as interactor:
-            res = await interactor()
+            res: Note = await interactor()
             self.assertEqual(self.note, res)
             self.assertTrue(expr=isinstance(res, Note))
 

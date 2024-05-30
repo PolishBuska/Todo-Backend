@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from presentation.web_api.v1.authenticated_router import authenticated_router_factory
-from presentation.web_api.v1.resources.todo import todo_router
-from presentation.web_api.v1.resources.note import note_router
+from src.presentation.web_api.v1.authenticated_router import authenticated_router_factory
+from src.presentation.web_api.v1.resources.todo import todo_router
+from src.presentation.web_api.v1.resources.note import note_router
 
 
 def main_router_factory(prefix):

@@ -3,12 +3,12 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 
-from domain.exceptions import NoteAlreadyExist, NoteNotFoundError, NoteNotFoundByPk, TodoNotFoundByPk
-from domain.models import EmptyNote, TodoNotesStatusDTO, IdentityOwnership, NoteIdList as DomainNoteIdList
-from presentation.note_ioc_interface import INoteIoC
-from presentation.todo_ioc_interface import ITodoIoC
-from infrastucture.stub import Stub
-from presentation.web_api.schemas import (
+from src.domain.exceptions import NoteAlreadyExist, NoteNotFoundError, NoteNotFoundByPk, TodoNotFoundByPk
+from src.domain.models import EmptyNote, TodoNotesStatusDTO, IdentityOwnership, NoteIdList as DomainNoteIdList
+from src.presentation.note_ioc_interface import INoteIoC
+from src.presentation.todo_ioc_interface import ITodoIoC
+from src.infrastucture.stub import Stub
+from src.presentation.web_api.schemas import (
     TodoReturned,
     NoteCreated,
     NoteReturned,

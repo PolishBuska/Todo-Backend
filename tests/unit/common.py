@@ -6,6 +6,8 @@ class TestDbReturnedRaw:
         self._res = res
 
     def to_dict(self):
+        if not self._res:
+            return []
         return asdict(self._res)
 
 

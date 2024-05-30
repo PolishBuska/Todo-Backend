@@ -10,6 +10,7 @@ alembic = "*"
 asyncpg = "*"
 pre-commit = "*"
 pylint = "*"
+pytest-asyncio = "*"
 
 [dev-packages]
 

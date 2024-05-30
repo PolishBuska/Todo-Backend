@@ -1,6 +1,6 @@
 from src.domain.models import EmptyNote, Note, TodoID
 
-from domain.exceptions import NoteIntegrityError, NoteAlreadyExist
+from src.domain.exceptions import NoteIntegrityError, NoteAlreadyExist
 
 
 class CreateNote:
